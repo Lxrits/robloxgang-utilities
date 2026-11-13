@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "robloxgang_utilities",
+  "version": "${version}",
+  "name": "RobloxGang Utilities",
+  "description": "Присед, время 52 и цвета RobloxGang — клиентские утилиты Fabric.",
+  "authors": ["RobloxGang"],
+  "license": "MIT",
+  "icon": "assets/robloxgang_utilities/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["ru.robloxgang.utilities.RobloxGangUtilities"],
+    "modmenu": ["ru.robloxgang.utilities.MenuIntegration"]
+  },
+  "mixins": ["robloxgang_utilities.mixins.json"],
+  "depends": { "fabricloader": ">=${loader}", "minecraft": "${minecraft}", "java": ">=21", "fabric-api": "*" },
+  "suggests": { "modmenu": "*" }
+}

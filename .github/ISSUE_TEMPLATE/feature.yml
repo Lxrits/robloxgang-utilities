@@ -1,0 +1,16 @@
+name: Предложение
+description: Предложить улучшение
+title: '[Feature] '
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Какую задачу нужно решить
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Как должна работать функция
+    validations:
+      required: true

@@ -1,0 +1,43 @@
+name: Ошибка
+description: Сообщить о проблеме RobloxGang Utilities
+title: '[Bug] '
+body:
+  - type: input
+    id: mod-version
+    attributes:
+      label: Версия мода
+      placeholder: 1.0.2
+    validations:
+      required: true
+  - type: dropdown
+    id: minecraft
+    attributes:
+      label: Версия Minecraft
+      options: ['1.21.10', '1.21.11', '26.1', '26.1.1', '26.1.2', '26.2', '26.3']
+    validations:
+      required: true
+  - type: input
+    id: dependencies
+    attributes:
+      label: Fabric Loader, Fabric API и Mod Menu
+      description: Укажите установленные версии.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Что произошло и что ожидалось
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Как воспроизвести
+      description: Укажите настройки функции и другие моды, если они влияют на ошибку.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Фрагмент ошибки или crash report
+      render: text

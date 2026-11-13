@@ -1,0 +1,44 @@
+// Development-only client verification; never packaged in the released mod.
+if (providers.gradleProperty('smoke').isPresent()) {
+    sourceSets {
+        smoke {
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+            runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+        }
+    }
+    if (providers.gradleProperty('modern').isPresent()) {
+        def generatedSmoke = layout.buildDirectory.dir('generated/sources/smoke')
+        tasks.register('modernSmokeSources', Copy) {
+            from 'src/smoke/java'; into generatedSmoke
+            exclude '**/ServerCapture.java'
+            inputs.property 'minecraft', minecraft_version
+            filter { line ->
+                if (minecraft_version == '26.2' || minecraft_version == '26.3') return line.replace('client.setScreen(', 'client.gui.setScreen(')
+                return line
+            }
+        }
+        sourceSets.smoke.java.setSrcDirs([generatedSmoke])
+        compileSmokeJava.dependsOn modernSmokeSources
+    }
+    loom {
+        mods {
+            robloxgang_utilities { sourceSet sourceSets.main }
+            robloxgang_smoke { sourceSet sourceSets.smoke }
+        }
+        runs {
+            client {
+                source sourceSets.smoke
+                runDir "run/smoke-${mod_version}-${minecraft_version}"
+                vmArg '-Drobloxgang.smoke=true'
+                if (providers.gradleProperty('capture').isPresent()) vmArg '-Drobloxgang.capture=true'
+                if (providers.gradleProperty('serverCapture').isPresent()) {
+                    vmArg '-Drobloxgang.serverCapture=true'
+                    vmArg '-Duser.timezone=Europe/Moscow'
+                    vmArg "-Drobloxgang.botCommands=${providers.gradleProperty('botCommandsFile').getOrElse(new File(rootProject.projectDir, 'tools/demo/commands.json').absolutePath)}"
+                    programArgs '--username', 'RG_Observer', '--width', '1280', '--height', '720'
+                }
+            }
+        }
+    }
+    tasks.named('runClient') { dependsOn tasks.named('smokeClasses') }
+}

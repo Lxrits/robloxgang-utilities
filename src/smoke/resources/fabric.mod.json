@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "robloxgang_smoke",
+  "version": "1.0.0",
+  "name": "RobloxGang development verification",
+  "environment": "client",
+  "entrypoints": {"client": ["ru.robloxgang.utilities.SmokeClient"]},
+  "depends": {"robloxgang_utilities": "*"}
+}

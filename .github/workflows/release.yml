@@ -1,0 +1,77 @@
+name: Draft GitHub Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require an existing version tag and release notes
+        shell: pwsh
+        run: |
+          . ./scripts/common.ps1
+          $version = Get-ModVersion
+          if ($env:GITHUB_REF -cne "refs/tags/v$version") {
+            throw "Run this workflow on tag v$version, matching gradle.properties."
+          }
+          if (!(Test-Path -LiteralPath "releases/$version.md")) { throw 'Release notes are missing.' }
+
+  build:
+    needs: check-tag
+    uses: ./.github/workflows/build.yml
+    permissions:
+      contents: read
+
+  draft:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: mod-*
+          path: artifacts
+      - name: Collect and verify versioned JARs
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Get-ChildItem artifacts -Recurse -Filter '*.jar' -File | Copy-Item -Destination dist
+          ./scripts/verify-artifacts.ps1 -Directory dist
+      - name: Create or refresh a draft
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          . ./scripts/common.ps1
+          $version = Get-ModVersion
+          $tag = "v$version"
+          $existing = & gh release view $tag --json isDraft 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            if (!(($existing | ConvertFrom-Json).isDraft)) { throw 'This release is already published; refusing to replace its assets.' }
+            & gh release edit $tag --title "RobloxGang Utilities $version" --notes-file "releases/$version.md"
+          } else {
+            & gh release create $tag --verify-tag --draft --title "RobloxGang Utilities $version" --notes-file "releases/$version.md"
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Could not prepare draft release.' }
+          $assets = @(Get-ChildItem dist -File | ForEach-Object FullName)
+          & gh release upload $tag @assets --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Could not upload release assets.' }

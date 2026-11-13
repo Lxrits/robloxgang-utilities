@@ -1,0 +1,51 @@
+plugins { id 'net.fabricmc.fabric-loom' version '1.19.4' }
+version = "${mod_version}+${minecraft_version}"
+layout.buildDirectory = layout.projectDirectory.dir("build/${minecraft_version}")
+group = 'ru.robloxgang'
+base { archivesName = 'robloxgang-utilities' }
+repositories { mavenCentral(); maven { url = 'https://maven.terraformersmc.com/releases/' } }
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "com.terraformersmc:modmenu:${modmenu_version}"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+// Adapt the 1.21.10 shared sources to the unobfuscated 26.x APIs.
+def modernJava = layout.buildDirectory.dir('generated/sources/modern')
+tasks.register('modernSources', Copy) {
+    from 'src/main/java'
+    into modernJava
+    inputs.property 'minecraft', minecraft_version
+    filter { line ->
+        def result = line.replace('ResourceLocation', 'Identifier')
+        .replace('GuiGraphics', 'GuiGraphicsExtractor')
+        .replace('.drawString(', '.text(').replace('.drawCenteredString(', '.centeredText(')
+        .replace('void render(GuiGraphicsExtractor g,int', 'void extractRenderState(GuiGraphicsExtractor g,int')
+        .replace('super.render(g,', 'super.extractRenderState(g,')
+        .replace('void renderWidget(', 'void extractContents(')
+        .replace('keybinding.v1.KeyBindingHelper', 'keymapping.v1.KeyMappingHelper')
+        .replace('KeyBindingHelper.registerKeyBinding', 'KeyMappingHelper.registerKeyMapping')
+        if (minecraft_version == '26.3' || minecraft_version == '26.2') result = result.replace('.setScreen(', '.gui.setScreen(')
+            .replace('client.screen', 'client.gui.screen()').replace('.gui.getChat()', '.gui.hud.getChat()')
+        return result
+    }
+}
+sourceSets.main.java.setSrcDirs([modernJava])
+compileJava.dependsOn modernSources
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraft', minecraft_version
+    inputs.property 'loader', loader_version
+    filesMatching('fabric.mod.json') {
+        expand(version: project.version, minecraft: minecraft_version,loader:loader_version)
+        filter { line -> line.replace('">=21"', '">=25"') }
+    }
+}
+java { sourceCompatibility = JavaVersion.VERSION_25; targetCompatibility = JavaVersion.VERSION_25; withSourcesJar() }
+tasks.named('sourcesJar') { dependsOn 'modernSources' }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 25 }
+test { useJUnitPlatform() }
+jar { from('LICENSE') }
+apply from: 'smoke.gradle'

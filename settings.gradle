@@ -1,0 +1,3 @@
+pluginManagement { repositories { maven { url = 'https://maven.fabricmc.net/' }; gradlePluginPortal(); mavenCentral() } }
+rootProject.name = 'RobloxGangUtilities'
+if (providers.gradleProperty('modern').isPresent()) rootProject.buildFileName = 'build-modern.gradle'
