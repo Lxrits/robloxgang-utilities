@@ -23,7 +23,7 @@ $sums = foreach ($entry in $entries) {
         try { $metadata = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
         if ($metadata.id -ne 'robloxgang_utilities' -or $metadata.version -cne "$version+$($entry.minecraft)" -or $metadata.depends.minecraft -cne $entry.minecraft -or $metadata.environment -ne 'client') { throw "Invalid mod metadata: $name" }
         if ($metadata.depends.java -ne ">=$($entry.java)" -or $metadata.depends.fabricloader -ne ">=$($entry.loader)") { throw "Invalid runtime dependencies: $name" }
-        foreach ($photo in @('gang', 'chat', 'sneak', 'reminder')) {
+        foreach ($photo in @('gang', 'chat', 'sneak', 'reminder', 'barriers', 'intro', 'overdose', 'anthem', 'blur42', 'reminder42')) {
             $png = $archive.GetEntry("assets/robloxgang_utilities/textures/demo/$photo.png")
             if (!$png -or $png.Length -lt 1000) { throw "Missing screenshot $photo in $name" }
             $imageStream = $png.Open()
@@ -40,8 +40,8 @@ $sums = foreach ($entry in $entries) {
             $imageHeight = $pngHeader[20] * 16777216 + $pngHeader[21] * 65536 + $pngHeader[22] * 256 + $pngHeader[23]
             if ($signature -ne '89504E470D0A1A0A' -or $imageWidth -ne 1280 -or $imageHeight -ne 720) { throw "Invalid screenshot format/dimensions: $photo in $name" }
         }
-        foreach ($required in @('LICENSE', 'robloxgang_utilities.mixins.json', 'assets/robloxgang_utilities/icon.png')) { if (!$archive.GetEntry($required)) { throw "Missing $required in $name" } }
-        if (@($archive.Entries | Where-Object { $_.FullName -like 'net/minecraft/*' -or $_.Name -like '*Smoke*' -or $_.Name -eq 'ServerCapture.class' }).Count) { throw "Development/game classes found in $name" }
+        foreach ($required in @('LICENSE', 'MEDIA-LICENSES.md', 'assets/robloxgang_utilities/intro/page_0.png', 'assets/robloxgang_utilities/intro/page_41.png', 'assets/robloxgang_utilities/intro/audio.wav', 'assets/robloxgang_utilities/sounds/anthem.ogg', 'assets/robloxgang_utilities/sounds/siren.ogg', 'assets/robloxgang_utilities/font/blur.json', 'robloxgang_utilities.mixins.json', 'assets/robloxgang_utilities/icon.png')) { if (!$archive.GetEntry($required)) { throw "Missing $required in $name" } }
+        if (@($archive.Entries | Where-Object { $_.FullName -like 'net/minecraft/*' -or $_.Name -like '*Smoke*' -or $_.Name -in @('ServerCapture.class','UpdateCapture.class') }).Count) { throw "Development/game classes found in $name" }
         $stream = $archive.GetEntry('ru/robloxgang/utilities/RobloxGangUtilities.class').Open()
         try { $header = [byte[]]::new(8); $read = $stream.Read($header, 0, 8) } finally { $stream.Dispose() }
         if ($read -ne 8 -or ($header[6] * 256 + $header[7]) -ne ($entry.java + 44)) { throw "Invalid Java bytecode target: $name" }

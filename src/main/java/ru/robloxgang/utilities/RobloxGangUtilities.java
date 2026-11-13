@@ -24,12 +24,14 @@ public final class RobloxGangUtilities implements ClientModInitializer {
     @Override public void onInitializeClient() {
         config = Config.load(); names = new NameCache(); names.refresh(false);
         KeyMapping.Category category = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("robloxgang_utilities", "main"));
+        MemeEffects.init(category);
         sneakKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.robloxgang_utilities.sneak", InputConstants.KEY_G, category));
         chatKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.robloxgang_utilities.chat52", InputConstants.KEY_H, category));
-        HudElementRegistry.addLast(ResourceLocation.fromNamespaceAndPath("robloxgang_utilities", "notifications"), (g, delta) -> Notifications.render(g));
+        HudElementRegistry.addLast(ResourceLocation.fromNamespaceAndPath("robloxgang_utilities", "notifications"), (g, delta) -> { BarrierOutlines.render(g); MemeEffects.render(g); Notifications.render(g); });
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
     }
     private void tick(Minecraft client) {
+        MemeEffects.tick(client); BarrierOutlines.tick(client);
         if (secondTone >= 0 && --secondTone == 0) { playTone(client, 1.5f, toneVolume); secondTone = -1; }
         boolean allowSneak=!sneakDown, allowChat=!chatDown;
         while (sneakKey.consumeClick()) {

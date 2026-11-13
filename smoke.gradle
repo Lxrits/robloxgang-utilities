@@ -10,7 +10,7 @@ if (providers.gradleProperty('smoke').isPresent()) {
         def generatedSmoke = layout.buildDirectory.dir('generated/sources/smoke')
         tasks.register('modernSmokeSources', Copy) {
             from 'src/smoke/java'; into generatedSmoke
-            exclude '**/ServerCapture.java'
+            exclude '**/ServerCapture.java', '**/UpdateCapture.java'
             inputs.property 'minecraft', minecraft_version
             filter { line ->
                 if (minecraft_version == '26.2' || minecraft_version == '26.3') return line.replace('client.setScreen(', 'client.gui.setScreen(')
@@ -30,6 +30,7 @@ if (providers.gradleProperty('smoke').isPresent()) {
                 source sourceSets.smoke
                 runDir "run/smoke-${mod_version}-${minecraft_version}"
                 vmArg '-Drobloxgang.smoke=true'
+                if (providers.gradleProperty('updateCapture').isPresent()) { vmArg '-Drobloxgang.updateCapture=true'; programArgs '--username', 'RG_Observer', '--width', '1280', '--height', '720' }
                 if (providers.gradleProperty('capture').isPresent()) vmArg '-Drobloxgang.capture=true'
                 if (providers.gradleProperty('serverCapture').isPresent()) {
                     vmArg '-Drobloxgang.serverCapture=true'

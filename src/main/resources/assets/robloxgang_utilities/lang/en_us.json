@@ -1,5 +1,10 @@
 {
   "key.category.robloxgang_utilities.main": "RobloxGang Utilities",
   "key.robloxgang_utilities.sneak": "Switch sneak mode (Hold / Toggle)",
-  "key.robloxgang_utilities.chat52": "Send 52 in chat"
+  "key.robloxgang_utilities.chat52": "Send 52 in chat",
+  "key.robloxgang_utilities.six": "Overdose 67: first key",
+  "key.robloxgang_utilities.seven": "Overdose 67: second key",
+  "key.robloxgang_utilities.anthem": "Anthem on repeated presses",
+  "subtitles.robloxgang_utilities.anthem": "Russian anthem",
+  "subtitles.robloxgang_utilities.siren": "Siren"
 }

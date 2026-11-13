@@ -5,9 +5,12 @@ import java.util.*;
 
 /** One reminder per absolute local-hour occurrence, including reconnects and clock rollback. */
 public final class ReminderClock {
+    private final int minute;
+    public ReminderClock() { this(52); }
+    public ReminderClock(int minute) { this.minute=minute; }
     private final Set<Instant> fired = new HashSet<>();
     public boolean poll(ZonedDateTime now) {
-        if (now.getMinute() != 52) return false;
+        if (now.getMinute() != minute) return false;
         return fired.add(now.withMinute(0).withSecond(0).withNano(0).toInstant());
     }
 }

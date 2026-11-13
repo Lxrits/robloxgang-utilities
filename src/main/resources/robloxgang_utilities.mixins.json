@@ -2,6 +2,16 @@
   "required": true,
   "package": "ru.robloxgang.utilities.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": ["PlayerInfoMixin", "PlayerNameMixin", "ChatNameMixin", "KeyMappingAccess"],
-  "injectors": { "defaultRequire": 1 }
+  "client": [
+    "PlayerInfoMixin",
+    "PlayerNameMixin",
+    "ChatNameMixin",
+    "KeyMappingAccess",
+    "FontBlurMixin",
+    "LoadingVideoMixin",
+    "NauseaMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

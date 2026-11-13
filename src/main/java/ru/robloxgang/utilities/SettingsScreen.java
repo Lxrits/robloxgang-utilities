@@ -15,7 +15,7 @@ public final class SettingsScreen extends Screen {
     private int page;
     private int left, top, controlWidth, rowStep;
     private boolean wide;
-    private static final String[] TABS = {"Присед", "52", "RobloxGang", "Вид"};
+    private static final String[] TABS = {"Присед", "52", "RobloxGang", "Вид", "Мемы"};
     public SettingsScreen(Screen parent) {
         super(Component.literal("RobloxGang Utilities")); this.parent = parent;
         draft = RobloxGangUtilities.config.copy();
@@ -26,15 +26,15 @@ public final class SettingsScreen extends Screen {
         int area = Math.min(width-24, 700);
         left = (width-area)/2; controlWidth = wide ? area-304 : area;
         top = 83; rowStep = Math.min(24, Math.max(16,(height-132)/6));
-        button("Демо",width-72,16,60,20,()->minecraft.setScreen(new FeatureDemoScreen(this,page)));
+        button("Демо",width-72,16,60,20,()->minecraft.setScreen(new FeatureDemoScreen(this,page==4?5:page)));
         for (int i=0;i<TABS.length;i++) {
             final int tab=i;
-            int tw = (area-9)/4;
+            int tw = (area-12)/5;
             Button b = button(TABS[i],left+i*(tw+3),51,tw,20,() -> { page=tab; rebuildWidgets(); });
             b.active = page != i;
         }
         switch (page) {
-            case 0 -> sneak(); case 1 -> reminder(); case 2 -> gang(); default -> appearance();
+            case 0 -> sneak(); case 1 -> reminder(); case 2 -> gang(); case 3 -> appearance(); default -> memes();
         }
         int y = height-28;
         button("Сохранить",left,y,(area-12)/3,20,() -> {
@@ -82,6 +82,14 @@ public final class SettingsScreen extends Screen {
         action("Обновить ники Mojang",()->RobloxGangUtilities.names.refresh(true));
     }
     private static String yes(boolean v) { return v?"Вкл":"Выкл"; }
+    private void memes() {
+        row("Обводка барьеров",()->draft.barriers,v->draft.barriers=v);
+        row("Видео при загрузке",()->draft.intro,v->draft.intro=v);
+        row("Передоз 67 (6 нажатий)",()->draft.overdose,v->draft.overdose=v);
+        row("Гимн (5 нажатий Z)",()->draft.anthem,v->draft.anthem=v);
+        row("Размытие 42",()->draft.blur42,v->draft.blur42=v);
+        row("Напоминание в :42",()->draft.reminder42,v->draft.reminder42=v);
+    }
     private void appearance() {
         row("Уменьшить анимацию",()->draft.reducedMotion,v->draft.reducedMotion=v);
         action("Длительность: "+draft.duration+" сек.",()->{draft.duration=draft.duration>=15?2:draft.duration+1;rebuildWidgets();});
@@ -110,6 +118,7 @@ public final class SettingsScreen extends Screen {
     }
     private void preview(GuiGraphics g,int x,int y) {
         g.drawString(font,"ПРЕДПРОСМОТР",x,y,0xFF64748B,false); y+=20;
+        if(page==4){FeaturePhotos.draw(g,5,x,y,272,153);g.drawString(font,"Все новые функции — в «Демо».",x,y+162,0xFF94A3B8,false);return;}
         if(FeaturePhotos.draw(g,page,x,y,272,153)) {
             g.drawString(font,page==2?"Все 5 ников в табе. Чат — в «Демо».":"Снимок из мира на локальном сервере.",x,y+162,0xFF94A3B8,false);
             return;

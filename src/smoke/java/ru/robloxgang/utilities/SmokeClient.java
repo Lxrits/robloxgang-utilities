@@ -14,6 +14,10 @@ public final class SmokeClient implements ClientModInitializer {
     private boolean hidden;
     @Override public void onInitializeClient() { ClientTickEvents.END_CLIENT_TICK.register(this::tick); }
     private void tick(Minecraft client) {
+        if(Boolean.getBoolean("robloxgang.updateCapture")){
+            try{Class.forName("ru.robloxgang.utilities.UpdateCapture").getDeclaredMethod("tick",Minecraft.class).invoke(null,client);}
+            catch(Exception e){throw new RuntimeException(e);}return;
+        }
         if(Boolean.getBoolean("robloxgang.serverCapture")){
             try{Class.forName("ru.robloxgang.utilities.ServerCapture").getDeclaredMethod("tick",Minecraft.class).invoke(null,client);}
             catch(Exception e){throw new RuntimeException(e);}return;
@@ -55,6 +59,8 @@ public final class SmokeClient implements ClientModInitializer {
                 if(ticks==85)capture(client,"reminder");
                 if(ticks==105)capture(client,"gang");
             }
+            if(ticks==110)client.setScreen(new SettingsScreen(null,4));
+            if(ticks==115)client.setScreen(new FeatureDemoScreen(null,5));
             if(ticks==120) {
                 LoggerFactory.getLogger("RobloxGang Smoke").info("RG_SMOKE_OK: client, mixins, settings, demos and toggle reset verified");
                 client.stop();

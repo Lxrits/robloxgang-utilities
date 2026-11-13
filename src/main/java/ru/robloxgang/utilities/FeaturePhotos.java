@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 final class FeaturePhotos {
     static boolean draw(GuiGraphics g,int feature,int x,int y,int w,int h) {
-        String name=feature==0?"sneak":feature==2?"gang":feature==4?"chat":"reminder";
+        String name=switch(feature){case 0->"sneak";case 2->"gang";case 4->"chat";case 5->"barriers";case 6->"intro";case 7->"overdose";case 8->"anthem";case 9->"blur42";case 10->"reminder42";default->"reminder";};
         ResourceLocation id=ResourceLocation.fromNamespaceAndPath("robloxgang_utilities","textures/demo/"+name+".png");
         if(Minecraft.getInstance().getResourceManager().getResource(id).isEmpty())return false;
         // Unedited frames from the 1280 x 720 multiplayer client.

@@ -13,6 +13,7 @@ public final class Config {
     public boolean sneak = true, sneakToast = true, reminder = true, sound = true, quickChat = true;
     public boolean colors = true, tab = true, chat = true, nametag = true, fallback = true;
     public boolean serverColorPriority = true;
+    public boolean barriers = true, intro = true, overdose = true, anthem = true, blur42 = true, reminder42 = true;
     public boolean reducedMotion = false;
     public int duration = 6, margin = 12;
     public float volume = 0.65f, scale = 1f;

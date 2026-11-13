@@ -1,5 +1,10 @@
 {
   "key.category.robloxgang_utilities.main": "RobloxGang Utilities",
   "key.robloxgang_utilities.sneak": "Переключить режим приседа (Hold / Toggle)",
-  "key.robloxgang_utilities.chat52": "Написать 52 в чат"
+  "key.robloxgang_utilities.chat52": "Написать 52 в чат",
+  "key.robloxgang_utilities.six": "Передоз 67: первая клавиша",
+  "key.robloxgang_utilities.seven": "Передоз 67: вторая клавиша",
+  "key.robloxgang_utilities.anthem": "Гимн при спаме",
+  "subtitles.robloxgang_utilities.anthem": "Гимн России",
+  "subtitles.robloxgang_utilities.siren": "Сирена"
 }

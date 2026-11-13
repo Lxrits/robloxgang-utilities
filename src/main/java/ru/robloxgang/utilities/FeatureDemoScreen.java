@@ -12,7 +12,13 @@ final class FeatureDemoScreen extends Screen {
     FeatureDemoScreen(Screen parent,int feature) {
         super(Component.literal("Скриншоты из игры"));this.parent=parent;this.feature=feature;this.photo=feature;
     }
+    private static final String[] MEMES={"Барьеры","Видеозаставка","Передоз 67","Гимн России","Размытие 42","Напоминание в :42"};
     @Override protected void init() {
+        if(feature==5){
+            addRenderableWidget(new UtilityButton("←",width/2-148,36,40,20,()->{photo=photo==5?10:photo-1;rebuildWidgets();}));
+            addRenderableWidget(new UtilityButton(MEMES[photo-5],width/2-102,36,204,20,()->{}));
+            addRenderableWidget(new UtilityButton("→",width/2+108,36,40,20,()->{photo=photo==10?5:photo+1;rebuildWidgets();}));
+        }
         if(feature==2) {
             addRenderableWidget(new UtilityButton("Таб: все 5 участников",width/2-148,36,174,20,()->{photo=2;rebuildWidgets();}));
             addRenderableWidget(new UtilityButton("Чат",width/2+32,36,116,20,()->{photo=4;rebuildWidgets();}));
@@ -22,13 +28,13 @@ final class FeatureDemoScreen extends Screen {
     @Override public void render(GuiGraphics g,int mx,int my,float dt) {
         g.fill(0,0,width,height,0xFF0D111C);
         g.drawString(font,"ROBLOXGANG / СКРИНШОТЫ",16,15,0xFFA78BFA,false);
-        int top=feature==2?65:40;
+        int top=(feature==2 || feature==5)?65:40;
         int maxHeight=Math.max(1,height-top-48);
         int photoW=Math.min(Math.min(width-24,900),maxHeight*1280/720);
         int photoH=photoW*720/1280;
         if(!FeaturePhotos.draw(g,photo,(width-photoW)/2,top,photoW,photoH))
             g.drawCenteredString(font,"Скриншот недоступен",width/2,top+20,0xFF94A3B8);
-        g.drawCenteredString(font,"Локальный сервер • тестовые профили участников",width/2,height-43,0xFF94A3B8);
+        g.drawCenteredString(font,photo==6?"Настоящий кадр загрузочного экрана":"Локальный сервер • игровые скриншоты",width/2,height-43,0xFF94A3B8);
         super.render(g,mx,my,dt);
     }
     @Override public void onClose(){minecraft.setScreen(parent);}
