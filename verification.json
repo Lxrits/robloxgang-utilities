@@ -1,8 +1,8 @@
 {
-  "modVersion": "1.1.0",
-  "date": "2026-11-13",
+  "modVersion": "1.1.1",
+  "date": "2026-11-14",
   "minecraftLatestRelease": "26.3",
-  "unitTestsPerVariant": 13,
+  "unitTestsPerVariant": 16,
   "versions": [
     {
       "minecraft": "1.21.10",
@@ -61,15 +61,71 @@
       "clientSmoke": "passed"
     }
   ],
-  "localServer": "vanilla 1.21.10, localhost:25575, offline test profile RG_Observer",
-  "gameplayChecked": [
-    "barrier outlines",
-    "chat censor digits and Russian/English words",
-    "67 title/red overlay/nausea/siren",
-    "42 notification",
-    "anthem playback"
+  "introTransition": {
+    "seconds": 0.8,
+    "waitsForResourceCompletion": true,
+    "mainMenuButtonsChecked": true,
+    "captureVersion": "1.21.10"
+  },
+  "anthem": {
+    "source": "https://www.youtube.com/watch?v=tNIMbHNtm7w",
+    "durationSeconds": 12.0,
+    "fullVolumeSeconds": 10,
+    "fadeOutSeconds": 2,
+    "verification": [
+      {
+        "seconds": 1,
+        "volumeRatio": 0.9946,
+        "expected": 1
+      },
+      {
+        "seconds": 5,
+        "volumeRatio": 0.9762,
+        "expected": 1
+      },
+      {
+        "seconds": 9,
+        "volumeRatio": 0.9852,
+        "expected": 1
+      },
+      {
+        "seconds": 10.1,
+        "volumeRatio": 0.9437,
+        "expected": 0.95
+      },
+      {
+        "seconds": 10.5,
+        "volumeRatio": 0.7435,
+        "expected": 0.75
+      },
+      {
+        "seconds": 11,
+        "volumeRatio": 0.493,
+        "expected": 0.5
+      },
+      {
+        "seconds": 11.5,
+        "volumeRatio": 0.248,
+        "expected": 0.25
+      },
+      {
+        "seconds": 11.9,
+        "volumeRatio": 0.0527,
+        "expected": 0.05
+      }
+    ]
+  },
+  "filter": [
+    "4-2",
+    "4.2",
+    "4,2",
+    "4 2",
+    "4...2",
+    "4___2",
+    "Unicode format characters",
+    "combining marks",
+    "supplementary Unicode offsets"
   ],
-  "captureNote": "67 playback and anthem were invoked through the development helper; the SpamTrigger detection windows and cooldown have unit coverage. Physical input testing on every Minecraft variant was not performed.",
-  "intro": "334 frames converted from user rblx.mp4, 30 fps, 480x270, PCM audio",
+  "realServerScreenshot": "vanilla 1.21.10, loopback, RG_Observer test profile",
   "mediaLicenses": "MEDIA-LICENSES.md"
 }
