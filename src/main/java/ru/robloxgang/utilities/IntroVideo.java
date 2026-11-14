@@ -40,9 +40,13 @@ public final class IntroVideo {
                 texture=next;page=wanted;
             }
             int alpha=Math.clamp(Math.round(opacity*255),0,255);
-            g.fill(0,0,g.guiWidth(),g.guiHeight(),alpha<<24);
             int w=g.guiWidth(),h=w*9/16;if(h>g.guiHeight()){h=g.guiHeight();w=h*16/9;}
-            g.blit(RenderPipelines.GUI_TEXTURED,texture,(g.guiWidth()-w)/2,(g.guiHeight()-h)/2,(frame%2)*480f,((frame%8)/2)*270f,w,h,480,270,960,1080,(alpha<<24)|0xFFFFFF);
+            int x=(g.guiWidth()-w)/2,y=(g.guiHeight()-h)/2;
+            // The video already covers its rectangle: fade black only in the
+            // letterbox bars, so menu pixels are not darkened twice.
+            if(y>0){g.fill(0,0,g.guiWidth(),y,alpha<<24);g.fill(0,y+h,g.guiWidth(),g.guiHeight(),alpha<<24);}
+            if(x>0){g.fill(0,y,x,y+h,alpha<<24);g.fill(x+w,y,g.guiWidth(),y+h,alpha<<24);}
+            g.blit(RenderPipelines.GUI_TEXTURED,texture,x,y,(frame%2)*480f,((frame%8)/2)*270f,w,h,480,270,960,1080,(alpha<<24)|0xFFFFFF);
         }catch(Exception e){failed=true;stop();LoggerFactory.getLogger("RobloxGang Utilities").warn("Intro unavailable; using vanilla loading screen",e);}
     }
     private static void sound(){
