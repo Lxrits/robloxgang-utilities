@@ -1,7 +1,6 @@
 {
-  "modVersion": "1.1.1",
+  "modVersion": "1.1.2",
   "date": "2026-11-14",
-  "minecraftLatestRelease": "26.3",
   "unitTestsPerVariant": 16,
   "versions": [
     {
@@ -10,7 +9,7 @@
       "modmenu": "16.0.1",
       "build": "passed",
       "unitTests": "passed",
-      "clientSmoke": "passed"
+      "inWorldOcclusion": "passed"
     },
     {
       "minecraft": "1.21.11",
@@ -18,7 +17,7 @@
       "modmenu": "17.0.1",
       "build": "passed",
       "unitTests": "passed",
-      "clientSmoke": "passed"
+      "inWorldOcclusion": "not separately run"
     },
     {
       "minecraft": "26.1",
@@ -26,7 +25,7 @@
       "modmenu": "18.0.2",
       "build": "passed",
       "unitTests": "passed",
-      "clientSmoke": "passed"
+      "inWorldOcclusion": "not separately run"
     },
     {
       "minecraft": "26.1.1",
@@ -34,7 +33,7 @@
       "modmenu": "18.0.2",
       "build": "passed",
       "unitTests": "passed",
-      "clientSmoke": "passed"
+      "inWorldOcclusion": "not separately run"
     },
     {
       "minecraft": "26.1.2",
@@ -42,7 +41,7 @@
       "modmenu": "18.0.2",
       "build": "passed",
       "unitTests": "passed",
-      "clientSmoke": "passed"
+      "inWorldOcclusion": "not separately run"
     },
     {
       "minecraft": "26.2",
@@ -50,7 +49,7 @@
       "modmenu": "20.0.3",
       "build": "passed",
       "unitTests": "passed",
-      "clientSmoke": "passed"
+      "inWorldOcclusion": "not separately run"
     },
     {
       "minecraft": "26.3",
@@ -58,74 +57,57 @@
       "modmenu": "21.0.0",
       "build": "passed",
       "unitTests": "passed",
-      "clientSmoke": "passed"
+      "inWorldOcclusion": "passed"
     }
   ],
-  "introTransition": {
-    "seconds": 0.8,
-    "waitsForResourceCompletion": true,
-    "mainMenuButtonsChecked": true,
-    "captureVersion": "1.21.10"
-  },
-  "anthem": {
-    "source": "https://www.youtube.com/watch?v=tNIMbHNtm7w",
-    "durationSeconds": 12.0,
-    "fullVolumeSeconds": 10,
-    "fadeOutSeconds": 2,
-    "verification": [
-      {
-        "seconds": 1,
-        "volumeRatio": 0.9946,
-        "expected": 1
+  "occlusionPixelChecks": {
+    "roi": [
+      400,
+      80,
+      900,
+      520
+    ],
+    "lowerWallRoi": [
+      400,
+      500,
+      850,
+      650
+    ],
+    "threshold": 8,
+    "versions": {
+      "1.21.10": {
+        "visible": {
+          "changedPixels": 11568,
+          "lowerWallChangedPixels": 258
+        },
+        "hidden": {
+          "changedPixels": 0,
+          "lowerWallChangedPixels": 0
+        },
+        "partial": {
+          "changedPixels": 9490,
+          "lowerWallChangedPixels": 0
+        }
       },
-      {
-        "seconds": 5,
-        "volumeRatio": 0.9762,
-        "expected": 1
-      },
-      {
-        "seconds": 9,
-        "volumeRatio": 0.9852,
-        "expected": 1
-      },
-      {
-        "seconds": 10.1,
-        "volumeRatio": 0.9437,
-        "expected": 0.95
-      },
-      {
-        "seconds": 10.5,
-        "volumeRatio": 0.7435,
-        "expected": 0.75
-      },
-      {
-        "seconds": 11,
-        "volumeRatio": 0.493,
-        "expected": 0.5
-      },
-      {
-        "seconds": 11.5,
-        "volumeRatio": 0.248,
-        "expected": 0.25
-      },
-      {
-        "seconds": 11.9,
-        "volumeRatio": 0.0527,
-        "expected": 0.05
+      "26.3": {
+        "visible": {
+          "changedPixels": 5947,
+          "lowerWallChangedPixels": 0
+        },
+        "hidden": {
+          "changedPixels": 0,
+          "lowerWallChangedPixels": 0
+        },
+        "partial": {
+          "changedPixels": 3183,
+          "lowerWallChangedPixels": 0
+        }
       }
-    ]
+    }
   },
-  "filter": [
-    "4-2",
-    "4.2",
-    "4,2",
-    "4 2",
-    "4...2",
-    "4___2",
-    "Unicode format characters",
-    "combining marks",
-    "supplementary Unicode offsets"
-  ],
-  "realServerScreenshot": "vanilla 1.21.10, loopback, RG_Observer test profile",
-  "mediaLicenses": "MEDIA-LICENSES.md"
+  "style": "gray #9B9B9B, alpha 0x70",
+  "adapters": {
+    "1.21.10": "world lines with depth testing",
+    "1.21.11 and 26.x": "default depth-tested gizmos; setAlwaysOnTop is not used"
+  }
 }
