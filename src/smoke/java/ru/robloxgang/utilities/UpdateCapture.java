@@ -20,7 +20,7 @@ final class UpdateCapture {
   if(t==20){mc.player.connection.sendCommand("tp @s 0 152 0");mc.player.connection.sendCommand("fill -8 150 -8 8 150 8 minecraft:smooth_stone");mc.player.connection.sendCommand("fill -1 152 5 1 154 5 minecraft:barrier");mc.player.connection.sendCommand("time set day");mc.player.connection.sendCommand("weather clear");}
   if(t==60){mc.getToastManager().clear();mc.gui.getChat().clearMessages(true);}
   if(t==180)capture(mc,"barriers");
-  if(t==190){mc.player.connection.sendCommand("say Проверка: 42 / сорок два / FORTY TWO / Player42");}
+  if(t==190){mc.player.connection.sendCommand("say Проверка: 4-2 / 4.2 / 4,2 / 4 2 / 4...2 / 4___2 / 4\u200B2");}
   if(t==210)mc.setScreen(new ChatScreen("",false));
   if(t==215)capture(mc,"blur42");
   if(t==230){Notifications.show("На часы смотреть нельзя!","Сейчас 14:42",0xEF4444,false);}
