@@ -41,7 +41,7 @@ $sums = foreach ($entry in $entries) {
             if ($signature -ne '89504E470D0A1A0A' -or $imageWidth -ne 1280 -or $imageHeight -ne 720) { throw "Invalid screenshot format/dimensions: $photo in $name" }
         }
         foreach ($required in @('LICENSE', 'MEDIA-LICENSES.md', 'assets/robloxgang_utilities/intro/page_0.png', 'assets/robloxgang_utilities/intro/page_41.png', 'assets/robloxgang_utilities/intro/audio.wav', 'assets/robloxgang_utilities/sounds/anthem.ogg', 'assets/robloxgang_utilities/sounds/siren.ogg', 'assets/robloxgang_utilities/font/blur.json', 'robloxgang_utilities.mixins.json', 'assets/robloxgang_utilities/icon.png')) { if (!$archive.GetEntry($required)) { throw "Missing $required in $name" } }
-        if (@($archive.Entries | Where-Object { $_.FullName -like 'net/minecraft/*' -or $_.Name -like '*Smoke*' -or $_.Name -in @('ServerCapture.class','UpdateCapture.class') }).Count) { throw "Development/game classes found in $name" }
+        if (@($archive.Entries | Where-Object { $_.FullName -like 'net/minecraft/*' -or $_.Name -like '*Smoke*' -or $_.Name -in @('ServerCapture.class','UpdateCapture.class','OcclusionCapture.class') }).Count) { throw "Development/game classes found in $name" }
         $stream = $archive.GetEntry('ru/robloxgang/utilities/RobloxGangUtilities.class').Open()
         try { $header = [byte[]]::new(8); $read = $stream.Read($header, 0, 8) } finally { $stream.Dispose() }
         if ($read -ne 8 -or ($header[6] * 256 + $header[7]) -ne ($entry.java + 44)) { throw "Invalid Java bytecode target: $name" }

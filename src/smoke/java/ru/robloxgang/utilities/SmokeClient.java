@@ -17,6 +17,10 @@ public final class SmokeClient implements ClientModInitializer {
     @Override public void onInitializeClient() { ClientTickEvents.END_CLIENT_TICK.register(this::tick); }
     private void tick(Minecraft client) {
         if(!muted && RobloxGangUtilities.config!=null){RobloxGangUtilities.config.volume=0;muted=true;}
+        if(Boolean.getBoolean("robloxgang.occlusionCapture")){
+            try{Class.forName("ru.robloxgang.utilities.OcclusionCapture").getDeclaredMethod("tick",Minecraft.class).invoke(null,client);}
+            catch(Exception e){throw new RuntimeException(e);}return;
+        }
         if(Boolean.getBoolean("robloxgang.updateCapture")){
             try{Class.forName("ru.robloxgang.utilities.UpdateCapture").getDeclaredMethod("tick",Minecraft.class).invoke(null,client);}
             catch(Exception e){throw new RuntimeException(e);}return;

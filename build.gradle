@@ -19,7 +19,7 @@ dependencies {
 if (minecraft_version == '1.21.11') {
     def adaptedJava = layout.buildDirectory.dir('generated/sources/12111')
     tasks.register('adapt12111', Copy) {
-        from 'src/main/java'; into adaptedJava
+        from('src/main/java'){exclude '**/BarrierWorldRenderer.java'}; from 'src/gizmos/java'; into adaptedJava
         filter { line -> line.replace('ResourceLocation', 'Identifier').replace('void renderWidget(', 'void renderContents(').replace('Lnet/minecraft/util/FormattedCharSequence;FFIZI)', 'Lnet/minecraft/util/FormattedCharSequence;FFIZZI)').replace('x,y,color,shadow,background)', 'x,y,color,shadow,false,background)') }
     }
     sourceSets.main.java.setSrcDirs([adaptedJava])

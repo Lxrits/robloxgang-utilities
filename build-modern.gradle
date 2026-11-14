@@ -15,7 +15,8 @@ dependencies {
 // Adapt the 1.21.10 shared sources to the unobfuscated 26.x APIs.
 def modernJava = layout.buildDirectory.dir('generated/sources/modern')
 tasks.register('modernSources', Copy) {
-    from 'src/main/java'
+    from('src/main/java'){exclude '**/BarrierWorldRenderer.java'}
+    from 'src/gizmos/java'
     into modernJava
     inputs.property 'minecraft', minecraft_version
     filter { line ->
