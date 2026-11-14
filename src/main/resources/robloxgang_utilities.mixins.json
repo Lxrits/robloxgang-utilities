@@ -9,7 +9,9 @@
     "KeyMappingAccess",
     "FontBlurMixin",
     "LoadingVideoMixin",
-    "NauseaMixin"
+    "NauseaMixin",
+    "TitleScreenAccess",
+    "ScreenAccess"
   ],
   "injectors": {
     "defaultRequire": 1

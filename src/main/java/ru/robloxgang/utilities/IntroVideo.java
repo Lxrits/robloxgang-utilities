@@ -18,8 +18,13 @@ public final class IntroVideo {
     private static volatile SourceDataLine audio;
     public static boolean enabled(Object candidate){if(owner==null)owner=candidate; return owner==candidate && RobloxGangUtilities.config!=null && RobloxGangUtilities.config.intro && !failed;}
     public static boolean holding(Object candidate){return enabled(candidate) && (start==0 || (System.nanoTime()-start)<11120000000L);}
-    public static void render(GuiGraphics g,Object candidate){
-        if(!enabled(candidate))return;
+    public static void finish(){
+        finished=true;stop();
+        if(texture!=null){Minecraft.getInstance().getTextureManager().release(texture);texture=null;}
+    }
+    public static void render(GuiGraphics g,Object candidate){render(g,candidate,1);}
+    public static void render(GuiGraphics g,Object candidate,float opacity){
+        if(!enabled(candidate) || opacity<=0)return;
         if(start==0){start=System.nanoTime();sound();}
         double elapsed=(System.nanoTime()-start)/1e9;
         if(elapsed>=11.12 && !finished){finished=true;stop();}
@@ -34,9 +39,10 @@ public final class IntroVideo {
                 if(texture!=null)Minecraft.getInstance().getTextureManager().release(texture);
                 texture=next;page=wanted;
             }
-            g.fill(0,0,g.guiWidth(),g.guiHeight(),0xFF000000);
+            int alpha=Math.clamp(Math.round(opacity*255),0,255);
+            g.fill(0,0,g.guiWidth(),g.guiHeight(),alpha<<24);
             int w=g.guiWidth(),h=w*9/16;if(h>g.guiHeight()){h=g.guiHeight();w=h*16/9;}
-            g.blit(RenderPipelines.GUI_TEXTURED,texture,(g.guiWidth()-w)/2,(g.guiHeight()-h)/2,(frame%2)*480f,((frame%8)/2)*270f,w,h,480,270,960,1080);
+            g.blit(RenderPipelines.GUI_TEXTURED,texture,(g.guiWidth()-w)/2,(g.guiHeight()-h)/2,(frame%2)*480f,((frame%8)/2)*270f,w,h,480,270,960,1080,(alpha<<24)|0xFFFFFF);
         }catch(Exception e){failed=true;stop();LoggerFactory.getLogger("RobloxGang Utilities").warn("Intro unavailable; using vanilla loading screen",e);}
     }
     private static void sound(){

@@ -26,12 +26,13 @@ tasks.register('modernSources', Copy) {
         .replace('method="render",at=', 'method="extractRenderState",at=')
         .replace('.drawString(', '.text(').replace('.drawCenteredString(', '.centeredText(')
         .replace('void render(GuiGraphicsExtractor g,int', 'void extractRenderState(GuiGraphicsExtractor g,int')
+        .replace('.renderWithTooltipAndSubtitles(', '.extractRenderStateWithTooltipAndSubtitles(')
         .replace('super.render(g,', 'super.extractRenderState(g,')
         .replace('void renderWidget(', 'void extractContents(')
         .replace('keybinding.v1.KeyBindingHelper', 'keymapping.v1.KeyMappingHelper')
         .replace('KeyBindingHelper.registerKeyBinding', 'KeyMappingHelper.registerKeyMapping')
         if (minecraft_version == '26.3' || minecraft_version == '26.2') result = result.replace('.setScreen(', '.gui.setScreen(')
-            .replace('client.screen', 'client.gui.screen()').replace('mc.screen', 'mc.gui.screen()').replace('.gui.getChat()', '.gui.hud.getChat()').replace('mc.gui.setTimes(', 'mc.gui.hud.setTimes(').replace('mc.gui.setTitle(', 'mc.gui.hud.setTitle(')
+            .replace('client.screen', 'client.gui.screen()').replace('mc.screen', 'mc.gui.screen()').replace('minecraft.screen', 'minecraft.gui.screen()').replace('minecraft.setOverlay(', 'minecraft.gui.setOverlay(').replace('.gui.getChat()', '.gui.hud.getChat()').replace('mc.gui.setTimes(', 'mc.gui.hud.setTimes(').replace('mc.gui.setTitle(', 'mc.gui.hud.setTitle(')
         return result
     }
 }

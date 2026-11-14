@@ -11,9 +11,12 @@ import org.slf4j.LoggerFactory;
 
 public final class SmokeClient implements ClientModInitializer {
     private int ticks;
-    private boolean hidden;
+    private boolean hidden, muted;
+    private int transitionShot;
+    private boolean transitionMenu;
     @Override public void onInitializeClient() { ClientTickEvents.END_CLIENT_TICK.register(this::tick); }
     private void tick(Minecraft client) {
+        if(!muted && RobloxGangUtilities.config!=null){RobloxGangUtilities.config.volume=0;muted=true;}
         if(Boolean.getBoolean("robloxgang.updateCapture")){
             try{Class.forName("ru.robloxgang.utilities.UpdateCapture").getDeclaredMethod("tick",Minecraft.class).invoke(null,client);}
             catch(Exception e){throw new RuntimeException(e);}return;
@@ -23,6 +26,7 @@ public final class SmokeClient implements ClientModInitializer {
             catch(Exception e){throw new RuntimeException(e);}return;
         }
         if(!hidden && client.getWindow()!=null) {
+            client.options.onboardAccessibility=false;
             try {
                 client.options.getClass().getField("pauseOnLostFocus").setBoolean(client.options,false);
                 long handle=(long)client.getWindow().getClass().getMethod("handle").invoke(client.getWindow());
@@ -31,7 +35,32 @@ public final class SmokeClient implements ClientModInitializer {
             }catch(Exception e){LoggerFactory.getLogger("RobloxGang Smoke").warn("Unable to hide test window",e);}
             hidden=true;
         }
+        if(client.getOverlay()!=null){
+            if(Boolean.getBoolean("robloxgang.transitionCapture"))try{
+                for(Field field:client.getOverlay().getClass().getDeclaredFields())if(field.getType()==IntroTransition.class){
+                    field.setAccessible(true);IntroTransition transition=(IntroTransition)field.get(client.getOverlay());
+                    Field timer=IntroTransition.class.getDeclaredField("started");timer.setAccessible(true);long started=timer.getLong(transition);
+                    if(started>=0 && transitionShot<3 && (System.nanoTime()-started)>new long[]{100000000L,400000000L,700000000L}[transitionShot]){
+                        LoggerFactory.getLogger("RobloxGang Smoke").info("RG_TRANSITION_SCREEN {} children={} loaded={}",client.screen==null?"null":client.screen.getClass().getName(),client.screen==null?-1:client.screen.children().size(),client.isGameLoadFinished());
+                        capture(client,"transition-"+transitionShot);transitionShot++;
+                    }
+                }
+            }catch(Exception e){throw new AssertionError("Transition capture failed",e);}
+            return;
+        }
         if(!client.isGameLoadFinished())return;
+        if(Boolean.getBoolean("robloxgang.transitionCapture") && !transitionMenu){
+            if(transitionShot!=3)throw new AssertionError("Crossfade frames were not observed: "+transitionShot);
+            try{capture(client,"transition-menu");}catch(Exception e){throw new AssertionError(e);}
+            transitionMenu=true;
+        }
+        if(ticks==0 && client.screen instanceof net.minecraft.client.gui.screens.TitleScreen){
+            try{
+                Field alpha=net.minecraft.client.gui.components.AbstractWidget.class.getDeclaredField("alpha");alpha.setAccessible(true);
+                for(var child:client.screen.children())if(child instanceof net.minecraft.client.gui.components.AbstractWidget widget && widget.visible && alpha.getFloat(widget)<=0)
+                    throw new AssertionError("Title menu widget remained transparent after intro");
+            }catch(ReflectiveOperationException e){throw new AssertionError(e);}
+        }
         ticks++;
         try {
             if(ticks==30) {
